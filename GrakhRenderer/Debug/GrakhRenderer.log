@@ -1,0 +1,7 @@
+﻿  Main.cpp
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(22,19): warning C4244: инициализация: преобразование "int" в "float", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(62,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(63,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(65,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(66,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+  GrakhRenderer.vcxproj -> C:\Unity\Projects\GrakhRenderer\GrakhRenderer\Debug\GrakhRenderer.exe
