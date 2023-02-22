@@ -1,6 +1,3 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
-
 #include <fstream>
 
 #pragma pack(push,1)
@@ -62,13 +59,13 @@ struct TGAColor {
 
 class TGAImage {
 protected:
-	unsigned char* data;
-	int width;
-	int height;
-	int bytespp;
+	unsigned char* _data;
+	int _width;
+	int _height;
+	int _bytespp;
 
-	bool   load_rle_data(std::ifstream &in);
-	bool unload_rle_data(std::ofstream &out);
+	bool   LoadRLEData(std::ifstream &in);
+	bool UnloadRLEData(std::ofstream &out);
 public:
 	enum Format {
 		GRAYSCALE=1, RGB=3, RGBA=4
@@ -77,20 +74,18 @@ public:
 	TGAImage();
 	TGAImage(int w, int h, int bpp);
 	TGAImage(const TGAImage &img);
-	bool read_tga_file(const char *filename);
-	bool write_tga_file(const char *filename, bool rle=true);
-	bool flip_horizontally();
-	bool flip_vertically();
-	bool scale(int w, int h);
-	TGAColor get(int x, int y);
-	bool set(int x, int y, TGAColor c);
+	bool ReadTGAFile(const char *filename);
+	bool WriteTGAFile(const char *filename, bool rle=true);
+	bool FlipHorizontally();
+	bool FlipVertically();
+	bool Scale(int w, int h);
+	TGAColor Get(int x, int y);
+	bool Set(int x, int y, TGAColor c);
 	~TGAImage();
 	TGAImage & operator =(const TGAImage &img);
-	int get_width();
-	int get_height();
-	int get_bytespp();
-	unsigned char *buffer();
-	void clear();
+	int GetWidth();
+	int GetHeight();
+	int GetBytespp();
+	unsigned char *Buffer();
+	void Clear();
 };
-
-#endif //__IMAGE_H__

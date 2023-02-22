@@ -1,7 +1,26 @@
 ﻿  Main.cpp
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(22,19): warning C4244: инициализация: преобразование "int" в "float", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(62,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(63,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(65,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(66,11): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(24,19): warning C4244: инициализация: преобразование "int" в "float", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(98,74): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=int
+          ]
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(98,44): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=int
+          ]
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\geometry.h(15,75): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
+          with
+          [
+              T=int
+          ]
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\geometry.h(15): message : во время компиляции функции-члена класс шаблон "Vector2<int> Vector2<int>::operator *(float) const"
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(73): message : выполняется компиляция ссылки на экземпляр шаблон функции "Vector2<int> Vector2<int>::operator *(float) const"
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(52): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "Vector2<int>"
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\geometry.h(15,68): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
+          with
+          [
+              T=int
+          ]
   GrakhRenderer.vcxproj -> C:\Unity\Projects\GrakhRenderer\GrakhRenderer\Debug\GrakhRenderer.exe

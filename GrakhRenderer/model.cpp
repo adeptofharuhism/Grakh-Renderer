@@ -19,7 +19,7 @@ Model::Model(const char* filename) : verts_(), faces_() {
 		char trash;
 		if (!line.compare(0, 2, "v ")) {
 			iss >> trash;
-			Vec3f newVector;
+			FloatVector3 newVector;
 			for (int i = 0; i < 3; i++)
 				iss >> newVector.raw[i];
 			verts_.push_back(newVector);
@@ -53,7 +53,7 @@ std::vector<int> Model::Face(int idx) {
 	return faces_[idx];
 }
 
-Vec3f Model::Vertice(int i) {
+FloatVector3 Model::Vertice(int i) {
 	return verts_[i];
 }
 
