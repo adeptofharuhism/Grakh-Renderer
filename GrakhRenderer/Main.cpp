@@ -144,6 +144,7 @@ IntVector2 ToScreenCoordinates(FloatVector3 vector, int width, int height) {
 }
 
 int main(int argc, char** argv) {
+	FloatVector3 lightDirection(0, 0, -1);
 	int width = 1920,
 		height = 1080;
 
@@ -153,13 +154,22 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < model.FaceAmount(); i++) {
 		std::vector<int> face = model.Face(i);
 
-		IntVector2 vectors[3];
+		IntVector2 screenCoordinates[3];
+		FloatVector3 worldCoordinates[3];
 		for (int i = 0; i < 3; i++) {
-			vectors[i] = ToScreenCoordinates(model.Vertice(face[i]), width, height);
+			FloatVector3 vertice = model.Vertice(face[i]);
+			screenCoordinates[i] = ToScreenCoordinates(vertice, width, height);
+			worldCoordinates[i] = vertice;
 		}
-		std::cerr << "face " << i << std::endl;
-		FilledTriangleBarycentric(vectors, &image, TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
-		//FilledTriangleLineSweeping(vectors[0], vectors[1], vectors[2], &image, TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
+		FloatVector3 crossProduct =
+			(worldCoordinates[2] - worldCoordinates[0]) ^ (worldCoordinates[1] - worldCoordinates[0]);
+		crossProduct.Normalize();
+
+		float intensity = lightDirection * crossProduct;
+
+		if (intensity > 0)
+			FilledTriangleBarycentric(screenCoordinates, &image,
+				TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
 	}
 
 	image.FlipVertically();

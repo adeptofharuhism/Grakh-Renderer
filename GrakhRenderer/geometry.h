@@ -29,8 +29,8 @@ template <class T> struct Vector3 {
 	inline Vector3<T> operator -(const Vector3<T>& v) const { return Vector3<T>(x - v.x, y - v.y, z - v.z); }
 	inline Vector3<T> operator *(float f) const { return Vector3<T>(x * f, y * f, z * f); }
 	inline T operator *(const Vector3<T>& v) const { return x * v.x + y * v.y + z * v.z; }
-	float Normalized() const { return std::sqrt(x * x + y * y + z * z); }
-	Vector3<T>& Normalize(T l = 1) { *this = (*this) * (l / Normalized()); return *this; }
+	float Magnitude() const { return std::sqrt(x * x + y * y + z * z); }
+	Vector3<T>& Normalize(T l = 1) { *this = (*this) * (l / Magnitude()); return *this; }
 	template <class > friend std::ostream& operator<<(std::ostream& stream, Vector3<T>& vector);
 };
 
