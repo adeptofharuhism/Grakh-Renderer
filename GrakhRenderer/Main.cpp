@@ -96,8 +96,8 @@ void FilledTriangleLineSweeping(IntVector2 point0, IntVector2 point1, IntVector2
 
 FloatVector3 ToBarycentricCoordinates(IntVector2 point, IntVector2* points) {
 	FloatVector3 crossProduct =
-		FloatVector3(points[2].x - points[0].x, points[1].x - points[0].x, points[0].x - point.x) ^
-		FloatVector3(points[2].y - points[0].y, points[1].y - points[0].y, points[0].y - point.y);
+		FloatVector3(points[1].x - points[0].x, points[2].x - points[0].x, points[0].x - point.x) ^
+		FloatVector3(points[1].y - points[0].y, points[2].y - points[0].y, points[0].y - point.y);
 
 	if (std::abs(crossProduct.z) < 1)
 		return FloatVector3(-1, 1, 1);
@@ -139,6 +139,46 @@ void FilledTriangleBarycentric(IntVector2* points, TGAImage* image, TGAColor col
 	}
 }
 
+void FilledTriangleBarycentricWithBuffer(IntVector2* points, float* depths, float** zBuffer, TGAImage* image, TGAColor color) {
+	int imageWidth = image->GetWidth(),
+		imageHeight = image->GetHeight();
+
+	IntVector2 bboxMin(imageWidth - 1, imageHeight - 1);
+	IntVector2 bboxMax(0, 0);
+
+	for (int i = 0; i < 3; i++) {
+		bboxMin.x = std::min((int)points[i].x, bboxMin.x);
+		bboxMax.x = std::max((int)points[i].x, bboxMax.x);
+
+		bboxMin.y = std::min((int)points[i].y, bboxMin.y);
+		bboxMax.y = std::max((int)points[i].y, bboxMax.y);
+	}
+
+	IntVector2 iterationPoint;
+	float depth;
+	FloatVector3 barycentricScreenCoords;
+	for (iterationPoint.x = bboxMin.x; iterationPoint.x < bboxMax.x; iterationPoint.x++) {
+		for (iterationPoint.y = bboxMin.y; iterationPoint.y < bboxMax.y; iterationPoint.y++) {
+			barycentricScreenCoords = ToBarycentricCoordinates(iterationPoint, points);
+			if (IsBarycentricValid(barycentricScreenCoords)) {
+				depth = 0;
+				depth += depths[0] * barycentricScreenCoords.x;
+				depth += depths[1] * barycentricScreenCoords.y;
+				depth += depths[2] * barycentricScreenCoords.z;
+
+				if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
+					zBuffer[iterationPoint.x][iterationPoint.y] = depth;
+					image->Set(iterationPoint.x, iterationPoint.y, color);
+
+					//code to watch zBuffer image
+					//int a = zBuffer[iterationPoint.x][iterationPoint.y] * 255;
+					//image->Set(iterationPoint.x, iterationPoint.y, TGAColor(a, a, a, 255));
+				}
+			}
+		}
+	}
+}
+
 IntVector2 ToScreenCoordinates(FloatVector3 vector, int width, int height) {
 	return IntVector2((vector.x + 1.) * width / 2, (vector.y + 1.) * height / 2);
 }
@@ -148,6 +188,14 @@ int main(int argc, char** argv) {
 	int width = 1920,
 		height = 1080;
 
+	float** zBuffer = new float* [width];
+	for (int i = 0; i < width; i++) {
+		zBuffer[i] = new float[height];
+		for (int j = 0; j < height; j++) {
+			zBuffer[i][j] = std::numeric_limits<float>::min();
+		}
+	}
+
 	TGAImage image(width, height, TGAImage::RGB);
 
 	Model model("obj/african_head.obj");
@@ -155,12 +203,15 @@ int main(int argc, char** argv) {
 		std::vector<int> face = model.Face(i);
 
 		IntVector2 screenCoordinates[3];
+		float depths[3];
 		FloatVector3 worldCoordinates[3];
 		for (int i = 0; i < 3; i++) {
 			FloatVector3 vertice = model.Vertice(face[i]);
 			screenCoordinates[i] = ToScreenCoordinates(vertice, width, height);
+			depths[i] = (vertice.z + 1.)/2;
 			worldCoordinates[i] = vertice;
 		}
+
 		FloatVector3 crossProduct =
 			(worldCoordinates[2] - worldCoordinates[0]) ^ (worldCoordinates[1] - worldCoordinates[0]);
 		crossProduct.Normalize();
@@ -168,7 +219,8 @@ int main(int argc, char** argv) {
 		float intensity = lightDirection * crossProduct;
 
 		if (intensity > 0)
-			FilledTriangleBarycentric(screenCoordinates, &image,
+			FilledTriangleBarycentricWithBuffer(screenCoordinates, depths, zBuffer, &image,
+				//TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
 				TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
 	}
 

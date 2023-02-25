@@ -59,19 +59,20 @@ C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(106,6): war
           [
               T=float
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(143,74): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(182,74): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
           with
           [
               T=int
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(143,44): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(182,44): warning C4244: аргумент: преобразование "double" в "T", возможна потеря данных
           with
           [
               T=int
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(172,58): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(172,41): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(172,24): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(210,32): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(223,58): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(223,41): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(223,24): warning C4244: аргумент: преобразование "float" в "unsigned char", возможна потеря данных
 C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\geometry.h(15,75): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
           with
           [
