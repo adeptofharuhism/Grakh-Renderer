@@ -3,13 +3,16 @@
 
 class Model {
 private:
-	std::vector<FloatVector3> verts_;
-	std::vector<std::vector<int> > faces_;
+	std::vector<FloatVector3> _verts;
+	std::vector<std::vector<IntVector3>> _faces;
+	std::vector<FloatVector2> _texVerts;
 public:
-	Model(const char *filename);
+	Model(const char* filename);
 	~Model();
 	int VerticeAmount();
 	int FaceAmount();
+	int TextureVerticeAmount();
 	FloatVector3 Vertice(int i);
-	std::vector<int> Face(int idx);
+	FloatVector2 TextureVertice(int i);
+	std::vector<IntVector3> Face(int idx);
 };

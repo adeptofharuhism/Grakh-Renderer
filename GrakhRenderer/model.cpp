@@ -5,9 +5,9 @@
 #include <vector>
 #include "model.h"
 
-Model::Model(const char* filename) : verts_(), faces_() {
+Model::Model(const char* fileName) : _verts(), _faces(), _texVerts() {
 	std::ifstream in;
-	in.open(filename, std::ifstream::in);
+	in.open(fileName, std::ifstream::in);
 
 	if (in.fail())
 		return;
@@ -22,38 +22,53 @@ Model::Model(const char* filename) : verts_(), faces_() {
 			FloatVector3 newVector;
 			for (int i = 0; i < 3; i++)
 				iss >> newVector.raw[i];
-			verts_.push_back(newVector);
+			_verts.push_back(newVector);
 		}
 		else if (!line.compare(0, 2, "f ")) {
-			std::vector<int> newFace;
-			int passIndex, vertexIndex;
+			std::vector<IntVector3> newFace;
+			int vertexIndex, textureVertexIndex, normaleVertexIndex;
 			iss >> trash;
-			while (iss >> vertexIndex >> trash >> passIndex >> trash >> passIndex) {
-				vertexIndex--; //индексы не с нуля
-				newFace.push_back(vertexIndex);
+			while (iss >> vertexIndex >> trash >> textureVertexIndex >> trash >> normaleVertexIndex) {
+				vertexIndex--; //индексы не с нуля, а с 1
+				textureVertexIndex--;
+				normaleVertexIndex--;
+				newFace.push_back(IntVector3(vertexIndex, textureVertexIndex, normaleVertexIndex));
 			}
-			faces_.push_back(newFace);
+			_faces.push_back(newFace);
+		}
+		else if (!line.compare(0, 3, "vt ")) {
+			int floatTrash;
+			FloatVector2 newVector;
+			iss >> trash >> trash >> newVector.raw[0] >> newVector.raw[1] >> floatTrash;
+			_texVerts.push_back(newVector);
 		}
 	}
-	std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << std::endl;
+	std::cerr << "v# " << _verts.size() << " f# " << _faces.size() << " vt# " << _texVerts.size() << std::endl;
 }
 
 Model::~Model() {
 }
 
 int Model::VerticeAmount() {
-	return (int)verts_.size();
+	return (int)_verts.size();
 }
 
 int Model::FaceAmount() {
-	return (int)faces_.size();
+	return (int)_faces.size();
 }
 
-std::vector<int> Model::Face(int idx) {
-	return faces_[idx];
+int Model::TextureVerticeAmount() {
+	return (int)_texVerts.size();
+}
+
+std::vector<IntVector3> Model::Face(int idx) {
+	return _faces[idx];
 }
 
 FloatVector3 Model::Vertice(int i) {
-	return verts_[i];
+	return _verts[i];
 }
 
+FloatVector2 Model::TextureVertice(int i) {
+	return _texVerts[i];
+}

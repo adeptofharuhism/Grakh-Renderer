@@ -179,14 +179,71 @@ void FilledTriangleBarycentricWithBuffer(IntVector2* points, float* depths, floa
 	}
 }
 
-IntVector2 ToScreenCoordinates(FloatVector3 vector, int width, int height) {
+inline IntVector2 ToCartesianCoordinates(FloatVector3 barycentricCoords, IntVector2* textureVertices) {
+	return IntVector2(
+		barycentricCoords.x * textureVertices[0].x + barycentricCoords.y * textureVertices[1].x + barycentricCoords.z * textureVertices[2].x,
+		barycentricCoords.x * textureVertices[0].y + barycentricCoords.y * textureVertices[1].y + barycentricCoords.z * textureVertices[2].y);
+}
+
+void FilledTriangleTextured(IntVector2* points, float* depths, float** zBuffer,
+	TGAImage* image, IntVector2* texturePoints, TGAImage* texture) {
+	int imageWidth = image->GetWidth(),
+		imageHeight = image->GetHeight();
+
+	IntVector2 bboxMin(imageWidth - 1, imageHeight - 1);
+	IntVector2 bboxMax(0, 0);
+
+	for (int i = 0; i < 3; i++) {
+		bboxMin.x = std::min((int)points[i].x, bboxMin.x);
+		bboxMax.x = std::max((int)points[i].x, bboxMax.x);
+
+		bboxMin.y = std::min((int)points[i].y, bboxMin.y);
+		bboxMax.y = std::max((int)points[i].y, bboxMax.y);
+	}
+
+	IntVector2 iterationPoint;
+	float depth;
+	FloatVector3 barycentricScreenCoords;
+	for (iterationPoint.x = bboxMin.x; iterationPoint.x < bboxMax.x; iterationPoint.x++) {
+		for (iterationPoint.y = bboxMin.y; iterationPoint.y < bboxMax.y; iterationPoint.y++) {
+			barycentricScreenCoords = ToBarycentricCoordinates(iterationPoint, points);
+			if (IsBarycentricValid(barycentricScreenCoords)) {
+				depth = 0;
+				depth += depths[0] * barycentricScreenCoords.x;
+				depth += depths[1] * barycentricScreenCoords.y;
+				depth += depths[2] * barycentricScreenCoords.z;
+
+				if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
+					zBuffer[iterationPoint.x][iterationPoint.y] = depth;
+
+					IntVector2 texturePixelCoordinates = ToCartesianCoordinates(barycentricScreenCoords, texturePoints);
+					TGAColor textureColor = texture->Get(texturePixelCoordinates.x, texturePixelCoordinates.y);
+
+					image->Set(iterationPoint.x, iterationPoint.y, textureColor);
+				}
+			}
+		}
+	}
+}
+
+inline IntVector2 ToScreenCoordinates(FloatVector3 vector, int width, int height) {
 	return IntVector2((vector.x + 1.) * width / 2, (vector.y + 1.) * height / 2);
+}
+
+inline IntVector2 ToTextureCoordinates(FloatVector2 vector, int width, int height) {
+	return IntVector2(vector.x * width, vector.y * height);
 }
 
 int main(int argc, char** argv) {
 	FloatVector3 lightDirection(0, 0, -1);
 	int width = 1920,
 		height = 1080;
+
+	TGAImage texture;
+	texture.ReadTGAFile("obj/african_head_diffuse.tga");
+	texture.FlipVertically();
+
+	Model model("obj/african_head.obj");
 
 	float** zBuffer = new float* [width];
 	for (int i = 0; i < width; i++) {
@@ -198,18 +255,24 @@ int main(int argc, char** argv) {
 
 	TGAImage image(width, height, TGAImage::RGB);
 
-	Model model("obj/african_head.obj");
 	for (int i = 0; i < model.FaceAmount(); i++) {
-		std::vector<int> face = model.Face(i);
+		std::vector<IntVector3> face = model.Face(i);
 
 		IntVector2 screenCoordinates[3];
 		float depths[3];
 		FloatVector3 worldCoordinates[3];
+		IntVector2 textureCoordinates[3];
 		for (int i = 0; i < 3; i++) {
-			FloatVector3 vertice = model.Vertice(face[i]);
+			FloatVector3 vertice = model.Vertice(face[i].x);
+
 			screenCoordinates[i] = ToScreenCoordinates(vertice, width, height);
-			depths[i] = (vertice.z + 1.)/2;
+
+			depths[i] = (vertice.z + 1.) / 2;
+
 			worldCoordinates[i] = vertice;
+
+			textureCoordinates[i] = ToTextureCoordinates(
+				model.TextureVertice(face[i].y), texture.GetWidth(), texture.GetHeight());
 		}
 
 		FloatVector3 crossProduct =
@@ -218,10 +281,13 @@ int main(int argc, char** argv) {
 
 		float intensity = lightDirection * crossProduct;
 
-		if (intensity > 0)
+		/*if (intensity > 0)
 			FilledTriangleBarycentricWithBuffer(screenCoordinates, depths, zBuffer, &image,
-				//TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
-				TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
+				TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));*/
+
+		if (intensity > 0)
+			FilledTriangleTextured(screenCoordinates, depths, zBuffer, &image,
+				textureCoordinates, &texture);
 	}
 
 	image.FlipVertically();
