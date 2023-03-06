@@ -59,7 +59,7 @@ C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(106,6): war
           [
               T=float
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(185,91): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(183,91): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
           with
           [
               T=float
@@ -68,7 +68,7 @@ C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(185,91): wa
           [
               T=int
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(184,91): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(182,91): warning C4244: аргумент: преобразование "T" в "T", возможна потеря данных
           with
           [
               T=float
@@ -105,7 +105,7 @@ C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(234,29): wa
           [
               T=int
           ]
-C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(270,33): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\Main.cpp(277,33): warning C4244: =: преобразование "double" в "float", возможна потеря данных
 C:\Unity\Projects\GrakhRenderer\GrakhRenderer\GrakhRenderer\geometry.h(15,75): warning C4244: аргумент: преобразование "float" в "T", возможна потеря данных
           with
           [

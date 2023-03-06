@@ -166,13 +166,11 @@ void FilledTriangleBarycentricWithBuffer(IntVector2* points, float* depths, floa
 				depth += depths[1] * barycentricScreenCoords.y;
 				depth += depths[2] * barycentricScreenCoords.z;
 
-				if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
-					zBuffer[iterationPoint.x][iterationPoint.y] = depth;
-					image->Set(iterationPoint.x, iterationPoint.y, color);
-
-					//code to watch zBuffer image
-					//int a = zBuffer[iterationPoint.x][iterationPoint.y] * 255;
-					//image->Set(iterationPoint.x, iterationPoint.y, TGAColor(a, a, a, 255));
+				if (iterationPoint.x >= 0 && iterationPoint.y >= 0) {
+					if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
+						zBuffer[iterationPoint.x][iterationPoint.y] = depth;
+						image->Set(iterationPoint.x, iterationPoint.y, color);
+					}
 				}
 			}
 		}
@@ -213,13 +211,15 @@ void FilledTriangleTextured(IntVector2* points, float* depths, float** zBuffer,
 				depth += depths[1] * barycentricScreenCoords.y;
 				depth += depths[2] * barycentricScreenCoords.z;
 
-				if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
-					zBuffer[iterationPoint.x][iterationPoint.y] = depth;
+				if (iterationPoint.x >= 0 && iterationPoint.y >= 0) {
+					if (zBuffer[iterationPoint.x][iterationPoint.y] < depth) {
+						zBuffer[iterationPoint.x][iterationPoint.y] = depth;
 
-					IntVector2 texturePixelCoordinates = ToCartesianCoordinates(barycentricScreenCoords, texturePoints);
-					TGAColor textureColor = texture->Get(texturePixelCoordinates.x, texturePixelCoordinates.y);
+						IntVector2 texturePixelCoordinates = ToCartesianCoordinates(barycentricScreenCoords, texturePoints);
+						TGAColor textureColor = texture->Get(texturePixelCoordinates.x, texturePixelCoordinates.y);
 
-					image->Set(iterationPoint.x, iterationPoint.y, textureColor);
+						image->Set(iterationPoint.x, iterationPoint.y, textureColor);
+					}
 				}
 			}
 		}
@@ -235,6 +235,8 @@ inline IntVector2 ToTextureCoordinates(FloatVector2 vector, int width, int heigh
 }
 
 int main(int argc, char** argv) {
+	float cameraDistance = 5;
+
 	FloatVector3 lightDirection(0, 0, -1);
 	int width = 1920,
 		height = 1080;
@@ -262,17 +264,22 @@ int main(int argc, char** argv) {
 		float depths[3];
 		FloatVector3 worldCoordinates[3];
 		IntVector2 textureCoordinates[3];
-		for (int i = 0; i < 3; i++) {
-			FloatVector3 vertice = model.Vertice(face[i].x);
+		for (int j = 0; j < 3; j++) {
+			FloatVector3 vertice = model.Vertice(face[j].x);
 
-			screenCoordinates[i] = ToScreenCoordinates(vertice, width, height);
+			float centralProjectionCoefficient = 1 - vertice.z / cameraDistance;
+			vertice.x = vertice.x / centralProjectionCoefficient;
+			vertice.y = vertice.y / centralProjectionCoefficient;
+			vertice.z = vertice.z / centralProjectionCoefficient;
 
-			depths[i] = (vertice.z + 1.) / 2;
+			screenCoordinates[j] = ToScreenCoordinates(vertice, width, height);
 
-			worldCoordinates[i] = vertice;
+			depths[j] = (vertice.z + 1.) / 2;
 
-			textureCoordinates[i] = ToTextureCoordinates(
-				model.TextureVertice(face[i].y), texture.GetWidth(), texture.GetHeight());
+			worldCoordinates[j] = vertice;
+
+			textureCoordinates[j] = ToTextureCoordinates(
+				model.TextureVertice(face[j].y), texture.GetWidth(), texture.GetHeight());
 		}
 
 		FloatVector3 crossProduct =
@@ -280,10 +287,6 @@ int main(int argc, char** argv) {
 		crossProduct.Normalize();
 
 		float intensity = lightDirection * crossProduct;
-
-		/*if (intensity > 0)
-			FilledTriangleBarycentricWithBuffer(screenCoordinates, depths, zBuffer, &image,
-				TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));*/
 
 		if (intensity > 0)
 			FilledTriangleTextured(screenCoordinates, depths, zBuffer, &image,
