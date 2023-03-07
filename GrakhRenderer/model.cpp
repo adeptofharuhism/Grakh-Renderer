@@ -5,7 +5,7 @@
 #include <vector>
 #include "model.h"
 
-Model::Model(const char* fileName) : _verts(), _faces(), _texVerts() {
+Model::Model(const char* fileName) : _verts(), _faces(), _texVerts(), _normalVerts() {
 	std::ifstream in;
 	in.open(fileName, std::ifstream::in);
 
@@ -36,6 +36,11 @@ Model::Model(const char* fileName) : _verts(), _faces(), _texVerts() {
 			}
 			_faces.push_back(newFace);
 		}
+		else if (!line.compare(0, 3, "vn ")) {
+			FloatVector3 newVector;
+			iss >> trash >> trash >> newVector.x >> newVector.y >> newVector.z;
+			_normalVerts.push_back(newVector);
+		}
 		else if (!line.compare(0, 3, "vt ")) {
 			int floatTrash;
 			FloatVector2 newVector;
@@ -43,7 +48,7 @@ Model::Model(const char* fileName) : _verts(), _faces(), _texVerts() {
 			_texVerts.push_back(newVector);
 		}
 	}
-	std::cerr << "v# " << _verts.size() << " f# " << _faces.size() << " vt# " << _texVerts.size() << std::endl;
+	std::cerr << "v# " << _verts.size() << " f# " << _faces.size() << " vt# " << _texVerts.size() << " vn# " << _normalVerts.size() << std::endl;
 }
 
 Model::~Model() {
@@ -61,6 +66,10 @@ int Model::TextureVerticeAmount() {
 	return (int)_texVerts.size();
 }
 
+int Model::NormalVerticeAmount() {
+	return (int)_normalVerts.size();
+}
+
 std::vector<IntVector3> Model::Face(int idx) {
 	return _faces[idx];
 }
@@ -71,4 +80,8 @@ FloatVector3 Model::Vertice(int i) {
 
 FloatVector2 Model::TextureVertice(int i) {
 	return _texVerts[i];
+}
+
+FloatVector3 Model::NormalVertice(int i) {
+	return _normalVerts[i];
 }
